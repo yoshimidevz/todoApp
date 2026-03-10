@@ -17,4 +17,12 @@ class TodoRepositoryImpl implements TodoRepository {
       _todos[index] = _todos[index].copyWith(isFavorite: !_todos[index].isFavorite);
     }
   }
+
+  @override
+  void toggleToday(String id) {
+    final index = _todos.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      _todos[index] = _todos[index].copyWith(isToday: !_todos[index].isToday);
+    }
+  }
 }

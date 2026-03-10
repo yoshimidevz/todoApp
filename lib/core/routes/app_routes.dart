@@ -5,7 +5,7 @@ import '../../features/todo/presentation/pages/todo_detail_page.dart';
 import '../../features/todo/presentation/pages/todo_page.dart'; 
 abstract class AppRoutes {
   static const String todo       = '/';
-  static const String todoDetail = '/todo-detail'; // ← novo
+  static const String todoDetail = '/todo-detail';
 }
 
 final appRouter = GoRouter(
@@ -18,7 +18,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.todoDetail,
       builder: (context, state) {
-        final todo = state.extra as TodoEntity; // ← recebe a tarefa
+        final todo = state.extra as TodoEntity;
         return TodoDetailPage(todo: todo);
       },
     ),

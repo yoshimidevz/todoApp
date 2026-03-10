@@ -35,4 +35,8 @@ class TodoCubit extends Cubit<TodoState> {
   void search(String query) {
     emit(state.copyWith(filter: query));
   }
+  void toggleToday(String id) {
+    _repository.toggleToday(id);
+    _load();
+  }
 }
