@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/messages/app_messages.dart';
+import '../../../../core/validators/app_validators.dart';
 
 class TodoPage extends StatefulWidget {
   const TodoPage({super.key});
@@ -10,13 +11,13 @@ class TodoPage extends StatefulWidget {
 
 class _TodoPageState extends State<TodoPage> {
   final _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   final List<String> _todos = ['testar aplicação', 'jogar valorant'];
-
+  
   void _add() {
-    final text = _controller.text.trim();
-    if (text.isEmpty) return;
-    setState(() => _todos.add(text));
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _todos.add(_controller.text.trim()));
     _controller.clear();
   }
 
@@ -28,22 +29,26 @@ class _TodoPageState extends State<TodoPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: AppMessages.todoHint,
+            Form(
+              key: _formKey,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _controller,
+                      validator: AppValidators.todoTitle,
+                      decoration: const InputDecoration(
+                        hintText: AppMessages.todoHint,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _add,
-                  child: const Text(AppMessages.addButton),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: _add,
+                    child: const Text(AppMessages.addButton),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             Expanded(
