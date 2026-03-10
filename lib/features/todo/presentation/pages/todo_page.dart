@@ -48,7 +48,7 @@ class _TodoViewState extends State<_TodoView> {
 
   void _add() {
     if (!_formKey.currentState!.validate()) return;
-    context.read<TodoCubit>().add(  // ← passa pelo cubit
+    context.read<TodoCubit>().add( 
       _controller.text.trim(),
       _dateController.text.trim(),
       _selectedCategory,
@@ -90,13 +90,13 @@ class _TodoViewState extends State<_TodoView> {
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _dateController,
-                    inputFormatters: [AppMasks.date],  // ← máscara aplicada aqui
+                    inputFormatters: [AppMasks.date],
                     decoration: const InputDecoration(
                       hintText: 'Vencimento: DD/MM/AAAA',
                     ),
                   ),
                   const SizedBox(height: 8),
-                  DropdownButtonFormField<String>( // ← dropdown de categoria
+                  DropdownButtonFormField<String>(
                     value: _selectedCategory,
                     decoration: const InputDecoration(labelText: 'Categoria'),
                     items: AppCategories.all
@@ -124,7 +124,7 @@ class _TodoViewState extends State<_TodoView> {
                     return const Center(child: Text(AppMessages.emptyList));
                   }
                   return ListView.builder(
-                    itemCount: state.filteredTodos.length,  // ← filteredTodos
+                    itemCount: state.filteredTodos.length,
                     itemBuilder: (context, i) {
                       final todo = state.filteredTodos[i];
                       return ListTile(
@@ -132,7 +132,7 @@ class _TodoViewState extends State<_TodoView> {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(todo.category),  // ← categoria
+                            Text(todo.category),
                             if (todo.dueDate != null && todo.dueDate!.isNotEmpty)
                               Text('Vence em ${todo.dueDate}'),
                           ],
@@ -153,9 +153,9 @@ class _TodoViewState extends State<_TodoView> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                              onPressed: () => context.go(          // ← navega pra tela de detalhes
+                              onPressed: () => context.go(
                                 AppRoutes.todoDetail,
-                                extra: todo,                        // ← passa a tarefa
+                                extra: todo,                        
                               ),
                             ),
                           ],
