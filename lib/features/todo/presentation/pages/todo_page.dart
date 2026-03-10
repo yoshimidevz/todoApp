@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/messages/app_messages.dart';
 import '../../../../core/validators/app_validators.dart';
+import '../../../../features/todo/domain/entities/todo_entity.dart';
 
 class TodoPage extends StatefulWidget {
   const TodoPage({super.key});
@@ -13,11 +14,16 @@ class _TodoPageState extends State<TodoPage> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  final List<String> _todos = ['testar aplicação', 'jogar valorant'];
-  
+  final List<TodoEntity> _todos = [];
+
   void _add() {
     if (!_formKey.currentState!.validate()) return;
-    setState(() => _todos.add(_controller.text.trim()));
+    setState(() {
+      _todos.add(TodoEntity(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        title: _controller.text.trim(),
+      ));
+    });
     _controller.clear();
   }
 
@@ -54,7 +60,18 @@ class _TodoPageState extends State<TodoPage> {
             Expanded(
               child: ListView.builder(
                 itemCount: _todos.length,
-                itemBuilder: (context, i) => ListTile(title: Text(_todos[i])),
+                itemBuilder: (context, i) {
+                  final todo = _todos[i];
+                  return ListTile(
+                    title: Text(todo.title),
+                    leading: Checkbox(
+                      value: todo.isDone,
+                      onChanged: (_) => setState(() {
+                        _todos[i] = todo.copyWith(isDone: !todo.isDone);
+                      }),
+                    ),
+                  );
+                },
               ),
             ),
           ],
