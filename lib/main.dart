@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'features/todo/presentation/pages/todo_page.dart';
 import 'core/theme/app_theme.dart';
 import 'core/di/injection.dart';
+import 'core/routes/app_routes.dart';
 
 void main() {
   setupDependencies();
@@ -14,9 +15,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       theme: AppTheme.light,
-      home: const TodoPage(),
+      routerConfig: appRouter,
     );
   }
 }
