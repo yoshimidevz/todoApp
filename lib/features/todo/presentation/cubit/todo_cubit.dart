@@ -32,4 +32,7 @@ class TodoCubit extends Cubit<TodoState> {
     _repository.toggleFavorite(id);
     _load();
   }
+  void search(String query) {
+    emit(state.copyWith(filter: query));
+  }
 }

@@ -34,11 +34,13 @@ class _TodoViewState extends State<_TodoView> {
   final _formKey = GlobalKey<FormState>();
   final _dateController = TextEditingController();
   String _selectedCategory = AppCategories.personal;
+  final _searchController = TextEditingController();
 
   @override
   void dispose() {
     _controller.dispose();
     _dateController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -103,17 +105,26 @@ class _TodoViewState extends State<_TodoView> {
                 ],
               ),
             ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _searchController,
+              decoration: const InputDecoration(
+                hintText: 'Buscar tarefas...',
+                prefixIcon: Icon(Icons.search),
+              ),
+              onChanged: (value) => context.read<TodoCubit>().search(value),
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: BlocBuilder<TodoCubit, TodoState>(
                 builder: (context, state) {
-                  if (state.todos.isEmpty) {
+                  if (state.filteredTodos.isEmpty) {
                     return const Center(child: Text(AppMessages.emptyList));
                   }
                   return ListView.builder(
-                    itemCount: state.todos.length,
+                    itemCount: state.filteredTodos.length,  // ← filteredTodos
                     itemBuilder: (context, i) {
-                      final todo = state.todos[i];
+                      final todo = state.filteredTodos[i];
                       return ListTile(
                         title: Text(todo.title),
                         subtitle: Column(
