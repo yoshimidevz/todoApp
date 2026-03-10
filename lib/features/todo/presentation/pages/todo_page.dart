@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/core/di/injection.dart';
 import 'package:flutter_application_2/features/todo/domain/repositories/todo_repository.dart';
-import '../../../../features/todo/data/repositories/todo_repository_impl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../features/todo/data/repositories/todo_repository_impl.dart';
 import '../../../../core/messages/app_messages.dart';
 import '../../../../core/validators/app_validators.dart';
 import '../cubit/todo_cubit.dart';
 import '../cubit/todo_state.dart';
 import '../../../../core/masks/app_masks.dart';
 import '../../../../core/messages/app_categories.dart';
+import '../../../../core/routes/app_routes.dart';
 
 class TodoPage extends StatelessWidget {
   const TodoPage({super.key});
@@ -139,12 +141,24 @@ class _TodoViewState extends State<_TodoView> {
                           value: todo.isDone,
                           onChanged: (_) => context.read<TodoCubit>().toggle(todo.id),
                         ),
-                        trailing: IconButton(
-                          icon: Icon(
-                            todo.isFavorite ? Icons.star : Icons.star_border,
-                            color: todo.isFavorite ? Colors.amber : null,
-                          ),
-                          onPressed: () => context.read<TodoCubit>().toggleFavorite(todo.id),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                todo.isFavorite ? Icons.star : Icons.star_border,
+                                color: todo.isFavorite ? Colors.amber : null,
+                              ),
+                              onPressed: () => context.read<TodoCubit>().toggleFavorite(todo.id),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                              onPressed: () => context.go(          // ← navega pra tela de detalhes
+                                AppRoutes.todoDetail,
+                                extra: todo,                        // ← passa a tarefa
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     },
