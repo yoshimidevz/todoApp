@@ -1,29 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/messages/app_messages.dart';
 import '../../../../core/validators/app_validators.dart';
-import '../../../../features/todo/domain/entities/todo_entity.dart';
+import '../cubit/todo_cubit.dart';
+import '../cubit/todo_state.dart';
 
-class TodoPage extends StatefulWidget {
+class TodoPage extends StatelessWidget {
   const TodoPage({super.key});
 
   @override
-  State<TodoPage> createState() => _TodoPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => TodoCubit(),
+      child: const _TodoView(),
+    );
+  }
 }
 
-class _TodoPageState extends State<TodoPage> {
+class _TodoView extends StatefulWidget {
+  const _TodoView();
+
+  @override
+  State<_TodoView> createState() => _TodoViewState();
+}
+
+class _TodoViewState extends State<_TodoView> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  final List<TodoEntity> _todos = [];
-
   void _add() {
     if (!_formKey.currentState!.validate()) return;
-    setState(() {
-      _todos.add(TodoEntity(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        title: _controller.text.trim(),
-      ));
-    });
+    context.read<TodoCubit>().add(_controller.text.trim());
     _controller.clear();
   }
 
@@ -58,18 +65,24 @@ class _TodoPageState extends State<TodoPage> {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
-                itemCount: _todos.length,
-                itemBuilder: (context, i) {
-                  final todo = _todos[i];
-                  return ListTile(
-                    title: Text(todo.title),
-                    leading: Checkbox(
-                      value: todo.isDone,
-                      onChanged: (_) => setState(() {
-                        _todos[i] = todo.copyWith(isDone: !todo.isDone);
-                      }),
-                    ),
+              child: BlocBuilder<TodoCubit, TodoState>(
+                builder: (context, state) {
+                  if (state.todos.isEmpty) {
+                    return const Center(child: Text(AppMessages.emptyList));
+                  }
+                  return ListView.builder(
+                    itemCount: state.todos.length,
+                    itemBuilder: (context, i) {
+                      final todo = state.todos[i];
+                      return ListTile(
+                        title: Text(todo.title),
+                        leading: Checkbox(
+                          value: todo.isDone,
+                          onChanged: (_) =>
+                              context.read<TodoCubit>().toggle(todo.id),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
