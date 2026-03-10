@@ -1,6 +1,6 @@
-# flutter_application_2
+# ToDo APP
 
-A new Flutter project.
+A new Flutter project only for puporse to learn how to program with flutter
 
 ## Getting Started
 
