@@ -8,6 +8,7 @@ import '../../../../core/validators/app_validators.dart';
 import '../cubit/todo_cubit.dart';
 import '../cubit/todo_state.dart';
 import '../../../../core/masks/app_masks.dart';
+import '../../../../core/messages/app_categories.dart';
 
 class TodoPage extends StatelessWidget {
   const TodoPage({super.key});
@@ -32,6 +33,7 @@ class _TodoViewState extends State<_TodoView> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _dateController = TextEditingController();
+  String _selectedCategory = AppCategories.personal;
 
   @override
   void dispose() {
@@ -45,6 +47,7 @@ class _TodoViewState extends State<_TodoView> {
     context.read<TodoCubit>().add(  // ← passa pelo cubit
       _controller.text.trim(),
       _dateController.text.trim(),
+      _selectedCategory,
     );
     _controller.clear();
     _dateController.clear();
@@ -88,6 +91,15 @@ class _TodoViewState extends State<_TodoView> {
                       hintText: 'Vencimento: DD/MM/AAAA',
                     ),
                   ),
+                  const SizedBox(height: 8),
+                  DropdownButtonFormField<String>( // ← dropdown de categoria
+                    value: _selectedCategory,
+                    decoration: const InputDecoration(labelText: 'Categoria'),
+                    items: AppCategories.all
+                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                        .toList(),
+                    onChanged: (value) => setState(() => _selectedCategory = value!),
+                  ),
                 ],
               ),
             ),
@@ -104,9 +116,14 @@ class _TodoViewState extends State<_TodoView> {
                       final todo = state.todos[i];
                       return ListTile(
                         title: Text(todo.title),
-                        subtitle: todo.dueDate != null && todo.dueDate!.isNotEmpty
-                            ? Text('Vence em ${todo.dueDate}')
-                            : null,
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(todo.category),  // ← categoria
+                            if (todo.dueDate != null && todo.dueDate!.isNotEmpty)
+                              Text('Vence em ${todo.dueDate}'),
+                          ],
+                        ),
                         leading: Checkbox(
                           value: todo.isDone,
                           onChanged: (_) => context.read<TodoCubit>().toggle(todo.id),

@@ -12,11 +12,12 @@ class TodoCubit extends Cubit<TodoState> {
 
   void _load() => emit(state.copyWith(todos: _repository.getTodos()));
 
-  void add(String title, String dueDate) {  
+  void add(String title, String dueDate, String category) {  
     final todo = TodoEntity(
       id: DateTime.now().toString(),
       title: title,
       dueDate: dueDate.isEmpty ? null : dueDate,
+      category: category,
     );
     _repository.addTodo(todo);
     _load();
