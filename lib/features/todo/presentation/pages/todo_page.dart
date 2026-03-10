@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/features/todo/domain/repositories/todo_repository.dart';
+import '../../../../features/todo/data/repositories/todo_repository_impl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/messages/app_messages.dart';
 import '../../../../core/validators/app_validators.dart';
@@ -11,7 +13,7 @@ class TodoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => TodoCubit(),
+      create: (_) => TodoCubit(TodoRepositoryImpl()),
       child: const _TodoView(),
     );
   }
