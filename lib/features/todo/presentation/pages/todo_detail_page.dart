@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/di/injection.dart';
+import 'package:go_router/go_router.dart';
 import '../../domain/entities/todo_entity.dart';
 import '../cubit/todo_cubit.dart';
+import '../../../../core/routes/app_routes.dart';
 
 class TodoDetailPage extends StatefulWidget {
   final TodoEntity todo;
@@ -24,48 +25,51 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<TodoCubit>(),
-      child: Scaffold(
-      appBar: AppBar(title: const Text('Detalhes da tarefa')),
-        body: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _DetailItem(label: 'Título', value: widget.todo.title),
-              _DetailItem(label: 'Categoria', value: widget.todo.category),
-              _DetailItem(
-                label: 'Vencimento',
-                value: widget.todo.dueDate ?? 'Sem data',
-              ),
-              _DetailItem(
-                label: 'Status',
-                value: widget.todo.isDone ? 'Concluída' : 'Pendente',
-              ),
-              _DetailItem(
-                label: 'Favorita',
-                value: widget.todo.isFavorite ? 'Sim' : 'Não',
-              ),
-              const Divider(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Para fazer hoje',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Switch(
-                    value: _isToday,
-                    onChanged: (value) {
-                      setState(() => _isToday = value);
-                      context.read<TodoCubit>().toggleToday(widget.todo.id); 
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detalhes da tarefa'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go(AppRoutes.todo),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _DetailItem(label: 'Título', value: widget.todo.title),
+            _DetailItem(label: 'Categoria', value: widget.todo.category),
+            _DetailItem(
+              label: 'Vencimento',
+              value: widget.todo.dueDate ?? 'Sem data',
+            ),
+            _DetailItem(
+              label: 'Status',
+              value: widget.todo.isDone ? 'Concluída' : 'Pendente',
+            ),
+            _DetailItem(
+              label: 'Favorita',
+              value: widget.todo.isFavorite ? 'Sim' : 'Não',
+            ),
+            const Divider(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Para fazer hoje',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Switch(
+                  value: _isToday,
+                  onChanged: (value) {
+                    setState(() => _isToday = value);
+                    context.read<TodoCubit>().toggleToday(widget.todo.id);
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
