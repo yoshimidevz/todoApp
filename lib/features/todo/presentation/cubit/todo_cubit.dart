@@ -12,8 +12,12 @@ class TodoCubit extends Cubit<TodoState> {
 
   void _load() => emit(state.copyWith(todos: _repository.getTodos()));
 
-  void add(String title) {
-    final todo = TodoEntity(id: DateTime.now().toString(), title: title);
+  void add(String title, String dueDate) {  
+    final todo = TodoEntity(
+      id: DateTime.now().toString(),
+      title: title,
+      dueDate: dueDate.isEmpty ? null : dueDate,
+    );
     _repository.addTodo(todo);
     _load();
   }
@@ -22,5 +26,9 @@ class TodoCubit extends Cubit<TodoState> {
       return t.id == id ? t.copyWith(isDone: !t.isDone) : t;
     }).toList();
     emit(state.copyWith(todos: updated));
+  }
+  void toggleFavorite(String id) {
+    _repository.toggleFavorite(id);
+    _load();
   }
 }

@@ -7,6 +7,7 @@ import '../../../../core/messages/app_messages.dart';
 import '../../../../core/validators/app_validators.dart';
 import '../cubit/todo_cubit.dart';
 import '../cubit/todo_state.dart';
+import '../../../../core/masks/app_masks.dart';
 
 class TodoPage extends StatelessWidget {
   const TodoPage({super.key});
@@ -30,11 +31,23 @@ class _TodoView extends StatefulWidget {
 class _TodoViewState extends State<_TodoView> {
   final _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _dateController = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _dateController.dispose();
+    super.dispose();
+  }
 
   void _add() {
     if (!_formKey.currentState!.validate()) return;
-    context.read<TodoCubit>().add(_controller.text.trim());
+    context.read<TodoCubit>().add(  // ← passa pelo cubit
+      _controller.text.trim(),
+      _dateController.text.trim(),
+    );
     _controller.clear();
+    _dateController.clear();
   }
 
   @override
@@ -47,21 +60,33 @@ class _TodoViewState extends State<_TodoView> {
           children: [
             Form(
               key: _formKey,
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _controller,
-                      validator: AppValidators.todoTitle,
-                      decoration: const InputDecoration(
-                        hintText: AppMessages.todoHint,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _controller,
+                          validator: AppValidators.todoTitle,
+                          decoration: const InputDecoration(
+                            hintText: AppMessages.todoHint,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: _add,
+                        child: const Text(AppMessages.addButton),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: _add,
-                    child: const Text(AppMessages.addButton),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _dateController,
+                    inputFormatters: [AppMasks.date],  // ← máscara aplicada aqui
+                    decoration: const InputDecoration(
+                      hintText: 'Vencimento: DD/MM/AAAA',
+                    ),
                   ),
                 ],
               ),
@@ -79,10 +104,19 @@ class _TodoViewState extends State<_TodoView> {
                       final todo = state.todos[i];
                       return ListTile(
                         title: Text(todo.title),
+                        subtitle: todo.dueDate != null && todo.dueDate!.isNotEmpty
+                            ? Text('Vence em ${todo.dueDate}')
+                            : null,
                         leading: Checkbox(
                           value: todo.isDone,
-                          onChanged: (_) =>
-                              context.read<TodoCubit>().toggle(todo.id),
+                          onChanged: (_) => context.read<TodoCubit>().toggle(todo.id),
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(
+                            todo.isFavorite ? Icons.star : Icons.star_border,
+                            color: todo.isFavorite ? Colors.amber : null,
+                          ),
+                          onPressed: () => context.read<TodoCubit>().toggleFavorite(todo.id),
                         ),
                       );
                     },

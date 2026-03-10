@@ -9,4 +9,12 @@ class TodoRepositoryImpl implements TodoRepository {
 
   @override
   void addTodo(TodoEntity todo) => _todos.add(todo);
+
+  @override
+  void toggleFavorite(String id) {
+    final index = _todos.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      _todos[index] = _todos[index].copyWith(isFavorite: !_todos[index].isFavorite);
+    }
+  }
 }
