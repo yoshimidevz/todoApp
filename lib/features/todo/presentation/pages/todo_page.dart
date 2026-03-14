@@ -135,12 +135,64 @@ class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixi
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _TodoList(filterToday: false),
-                  _TodoList(filterToday: true),
-                ],
+              child: BlocBuilder<TodoCubit, TodoState>(
+                builder: (context, state) {
+                  if (state.filteredTodos.isEmpty) {
+                    return const Center(child: Text(AppMessages.emptyList));
+                  }
+                  return ListView.builder(
+                    itemCount: state.filteredTodos.length,
+                    itemBuilder: (context, i) {
+                      final todo = state.filteredTodos[i]; // ← aqui o todo é declarado
+                      return Dismissible(
+                        key: Key(todo.id),
+                        direction: DismissDirection.endToStart,
+                        dismissThresholds: const {DismissDirection.endToStart: 0.4},
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(right: 24),
+                          color: Colors.red,
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        onDismissed: (_) => context.read<TodoCubit>().delete(todo.id),
+                        child: ListTile(
+                          title: Text(todo.title),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(todo.category),
+                              if (todo.dueDate != null && todo.dueDate!.isNotEmpty)
+                                Text('Vence em ${todo.dueDate}'),
+                            ],
+                          ),
+                          leading: Checkbox(
+                            value: todo.isDone,
+                            onChanged: (_) => context.read<TodoCubit>().toggle(todo.id),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  todo.isFavorite ? Icons.star : Icons.star_border,
+                                  color: todo.isFavorite ? Colors.amber : null,
+                                ),
+                                onPressed: () => context.read<TodoCubit>().toggleFavorite(todo.id),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                                onPressed: () => context.go(
+                                  AppRoutes.todoDetail,
+                                  extra: {'todo': todo, 'cubit': context.read<TodoCubit>()},
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],

@@ -25,4 +25,9 @@ class TodoRepositoryImpl implements TodoRepository {
       _todos[index] = _todos[index].copyWith(isToday: !_todos[index].isToday);
     }
   }
+
+  @override
+  void deleteTodo(String id) {
+    _todos.removeWhere((t) => t.id == id);
+  }
 }
