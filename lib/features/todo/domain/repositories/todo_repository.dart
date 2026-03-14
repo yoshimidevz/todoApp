@@ -5,4 +5,5 @@ abstract class TodoRepository {
   void addTodo(TodoEntity todo);
   void toggleFavorite(String id);
   void toggleToday(String id);
+  void deleteTodo(String id);
 }

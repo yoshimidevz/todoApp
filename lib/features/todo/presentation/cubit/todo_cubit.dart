@@ -39,4 +39,8 @@ class TodoCubit extends Cubit<TodoState> {
     _repository.toggleToday(id);
     _load();
   }
+  void delete(String id) {
+    _repository.deleteTodo(id);
+    _load();
+  }
 }
