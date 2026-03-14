@@ -114,7 +114,7 @@ class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixi
                   ),
                   const SizedBox(height: 8),
                   DropdownButtonFormField<String>(
-                    value: _selectedCategory,
+                    initialValue: _selectedCategory,
                     decoration: const InputDecoration(labelText: 'Categoria'),
                     items: AppCategories.all
                         .map((c) => DropdownMenuItem(value: c, child: Text(c)))
