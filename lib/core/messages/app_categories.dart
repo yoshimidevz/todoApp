@@ -4,5 +4,5 @@ class AppCategories {
   static const String studies   = 'Estudos';
   static const String shopping  = 'Compras';
 
-  static const List<String> all = [personal, work, studies, shopping];
+  static const List<String> defaults = [personal, work, studies, shopping];
 }
