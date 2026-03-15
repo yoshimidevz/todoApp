@@ -119,6 +119,7 @@ class _TodoFormViewState extends State<_TodoFormView> {
                   decoration: const InputDecoration(
                     hintText: 'Vencimento: DD/MM/AAAA',
                   ),
+                  validator: AppValidators.dueDate,
                 ),
                 const SizedBox(height: 8),
                 Row(
