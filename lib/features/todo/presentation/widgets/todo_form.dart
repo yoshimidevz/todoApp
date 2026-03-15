@@ -5,6 +5,7 @@ import '../../../../../core/masks/app_masks.dart';
 import '../../../../../core/messages/app_messages.dart';
 import '../../../../../core/validators/app_validators.dart';
 import '../../../../../core/patterns/buttons/app_button.dart';
+import '../../../../../core/patterns/inputs/app_text_field.dart';
 import '../cubit/category_cubit.dart';
 import '../cubit/category_state.dart';
 import '../cubit/todo_cubit.dart';
@@ -98,8 +99,9 @@ class _TodoFormViewState extends State<_TodoFormView> {
                 Row(
                   children: [
                     Expanded(
-                      child: TextFormField(
+                      child: AppTextField(
                         controller: _controller,
+                        hintText: AppMessages.todoHint,
                         validator: (value) {
                           final todoState = context.read<TodoCubit>().state;
                           return AppValidators.todoTitle(value) ??
@@ -111,9 +113,6 @@ class _TodoFormViewState extends State<_TodoFormView> {
                                     .toList(),
                               );
                         },
-                        decoration: const InputDecoration(
-                          hintText: AppMessages.todoHint,
-                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -124,12 +123,10 @@ class _TodoFormViewState extends State<_TodoFormView> {
                   ],
                 ),
                 const SizedBox(height: 8),
-                TextFormField(
+                AppTextField(
                   controller: _dateController,
+                  hintText: 'Vencimento: DD/MM/AAAA',
                   inputFormatters: [AppMasks.date],
-                  decoration: const InputDecoration(
-                    hintText: 'Vencimento: DD/MM/AAAA',
-                  ),
                   validator: AppValidators.dueDate,
                 ),
                 const SizedBox(height: 8),
