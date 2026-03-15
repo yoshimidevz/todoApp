@@ -6,6 +6,7 @@ import '../../../../../core/messages/app_messages.dart';
 import '../../../../../core/validators/app_validators.dart';
 import '../../../../../core/patterns/buttons/app_button.dart';
 import '../../../../../core/patterns/inputs/app_text_field.dart';
+import '../../../../../core/patterns/dialogs/app_dialog.dart';
 import '../cubit/category_cubit.dart';
 import '../cubit/category_state.dart';
 import '../cubit/todo_cubit.dart';
@@ -54,33 +55,21 @@ class _TodoFormViewState extends State<_TodoFormView> {
 
   void _showAddCategoryDialog() {
     final controller = TextEditingController();
-    showDialog(
+    AppDialog.show(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Nova categoria'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: 'Nome da categoria'),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () {
-              final name = controller.text.trim();
-              if (name.isNotEmpty) {
-                context.read<CategoryCubit>().addCategory(name);
-                setState(() => _selectedCategory = name);
-              }
-              Navigator.pop(dialogContext);
-            },
-            child: const Text('Adicionar'),
-          ),
-        ],
+      title: 'Nova categoria',
+      confirmLabel: 'Adicionar',
+      content: AppTextField(
+        controller: controller,
+        hintText: 'Nome da categoria',
       ),
+      onConfirm: () {
+        final name = controller.text.trim();
+        if (name.isNotEmpty) {
+          context.read<CategoryCubit>().addCategory(name);
+          setState(() => _selectedCategory = name);
+        }
+      },
     );
   }
 
