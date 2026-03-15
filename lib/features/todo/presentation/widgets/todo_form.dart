@@ -99,7 +99,17 @@ class _TodoFormViewState extends State<_TodoFormView> {
                     Expanded(
                       child: TextFormField(
                         controller: _controller,
-                        validator: AppValidators.todoTitle,
+                        validator: (value) {
+                          final todoState = context.read<TodoCubit>().state;
+                          return AppValidators.todoTitle(value) ??
+                              AppValidators.existingTodo(
+                                value,
+                                _selectedCategory ?? '',
+                                todoState.todos
+                                    .map((t) => {'title': t.title, 'category': t.category})
+                                    .toList(),
+                              );
+                        },
                         decoration: const InputDecoration(
                           hintText: AppMessages.todoHint,
                         ),

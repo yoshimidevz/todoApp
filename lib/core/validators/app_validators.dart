@@ -3,6 +3,7 @@ class AppValidators {
   static String? todoTitle(String? value) {
     if (value == null || value.trim().isEmpty) return 'Campo obrigatório';
     if (value.trim().length < 3) return 'Mínimo 3 caracteres';
+    
     return null;
   }
 
@@ -22,6 +23,15 @@ class AppValidators {
     if (date == null) return 'Data inválida';
 
     if (date.isBefore(DateTime.now())) return 'Data inválida';
+    return null;
+  }
+
+  static String? existingTodo(String? value, String category, List<Map<String, String>> todos) {
+    if (value == null || value.trim().isEmpty) return null;
+    final exists = todos.any((t) =>
+      t['title'] == value.trim() && t['category'] == category
+    );
+    if (exists) return 'Já existe uma tarefa com esse título nessa categoria';
     return null;
   }
 }
