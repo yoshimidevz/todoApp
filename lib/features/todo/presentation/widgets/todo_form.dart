@@ -4,6 +4,7 @@ import '../../../../../core/di/injection.dart';
 import '../../../../../core/masks/app_masks.dart';
 import '../../../../../core/messages/app_messages.dart';
 import '../../../../../core/validators/app_validators.dart';
+import '../../../../../core/patterns/buttons/app_button.dart';
 import '../cubit/category_cubit.dart';
 import '../cubit/category_state.dart';
 import '../cubit/todo_cubit.dart';
@@ -116,10 +117,10 @@ class _TodoFormViewState extends State<_TodoFormView> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    ElevatedButton(
+                    AppButton(
+                      label: AppMessages.addButton,
                       onPressed: _add,
-                      child: const Text(AppMessages.addButton),
-                    ),
+                    )
                   ],
                 ),
                 const SizedBox(height: 8),
