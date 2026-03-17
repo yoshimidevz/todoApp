@@ -28,6 +28,7 @@ class _TodoView extends StatefulWidget {
 
 class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _searchVisible = false;
 
   @override
   void initState() {
@@ -45,7 +46,20 @@ class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppMessages.pageTitle),
+        title: _searchVisible
+            ? TodoSearch()          
+            : const Text(AppMessages.pageTitle),
+        actions: [
+          IconButton(
+            icon: Icon(_searchVisible ? Icons.close : Icons.search),
+            onPressed: () {
+              setState(() => _searchVisible = !_searchVisible);
+              if (!_searchVisible) {
+                context.read<TodoCubit>().search('');
+              }
+            },
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -58,9 +72,7 @@ class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixi
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const TodoSearch(),
             const TodoForm(),
-            const SizedBox(height: 8),
             const SizedBox(height: 16),
             Expanded(
               child: TabBarView(
