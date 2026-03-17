@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  expandable_section:
+    dependency: "direct main"
+    description:
+      name: expandable_section
+      sha256: "137fe10530e638bc651385d1beb2d1df0bd57275b1479adf56375a7e5dfbb041"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   fake_async:
     dependency: transitive
     description:

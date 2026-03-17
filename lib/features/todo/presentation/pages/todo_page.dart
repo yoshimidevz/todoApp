@@ -58,9 +58,9 @@ class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixi
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            const TodoSearch(),
             const TodoForm(),
             const SizedBox(height: 8),
-            const TodoSearch(),
             const SizedBox(height: 16),
             Expanded(
               child: TabBarView(
