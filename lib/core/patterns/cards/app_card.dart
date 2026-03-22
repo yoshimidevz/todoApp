@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_text_styles.dart';
+import '../../../features/todo/domain/entities/todo_entity.dart';
 import 'app_category_chip.dart';
 
 class AppCard extends StatelessWidget {
@@ -9,6 +10,7 @@ class AppCard extends StatelessWidget {
   final String? dueDate;
   final bool isDone;
   final bool isFavorite;
+  final RepeatInterval? repeat;
   final VoidCallback onToggleDone;
   final VoidCallback onToggleFavorite;
   final VoidCallback onTap;
@@ -23,7 +25,19 @@ class AppCard extends StatelessWidget {
     required this.onToggleFavorite,
     required this.onTap,
     this.dueDate,
+    this.repeat,
   });
+
+  String? get _repeatLabel {
+    if (repeat == null) return null;
+    switch (repeat) {
+      case RepeatInterval.daily:   return 'Diário';
+      case RepeatInterval.weekly:  return 'Semanal';
+      case RepeatInterval.monthly: return 'Mensal';
+      case RepeatInterval.none:    return null;
+      case null: return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +64,18 @@ class AppCard extends StatelessWidget {
         subtitle: Row(
           children: [
             AppCategoryChip(label: category),
+            if (_repeatLabel != null) ...[
+              const SizedBox(width: 6),
+              Text('|', style: AppTextStyles.caption.copyWith(color: AppColors.textDisabled)),
+              const SizedBox(width: 6),
+              AppCategoryChip(
+                label: _repeatLabel!,
+                isSelected: true,
+              ),
+            ],
             if (dueDate != null && dueDate!.isNotEmpty) ...[
+              const SizedBox(width: 6),
+              Text('|', style: AppTextStyles.caption.copyWith(color: AppColors.textDisabled)),
               const SizedBox(width: 6),
               Text(dueDate!, style: AppTextStyles.caption),
             ],
