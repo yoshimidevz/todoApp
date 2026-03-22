@@ -43,4 +43,8 @@ class TodoCubit extends Cubit<TodoState> {
     _repository.deleteTodo(id);
     _load();
   }
+  void setRepeat(String id, RepeatInterval repeat) {
+    _repository.setRepeat(id, repeat);
+    _load();
+  }
 }
