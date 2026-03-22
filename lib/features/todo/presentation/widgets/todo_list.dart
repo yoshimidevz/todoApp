@@ -99,6 +99,7 @@ class _TodoListViewState extends State<_TodoListView> {
         dueDate: todo.dueDate,
         isDone: todo.isDone,
         isFavorite: todo.isFavorite,
+        repeat: todo.repeat,
         onToggleDone: () => context.read<TodoCubit>().toggle(todo.id),
         onToggleFavorite: () =>
             context.read<TodoCubit>().toggleFavorite(todo.id),
