@@ -6,4 +6,5 @@ abstract class TodoRepository {
   void toggleFavorite(String id);
   void toggleToday(String id);
   void deleteTodo(String id);
+  void setRepeat(String id, RepeatInterval repeat);
 }

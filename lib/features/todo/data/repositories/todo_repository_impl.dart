@@ -30,4 +30,12 @@ class TodoRepositoryImpl implements TodoRepository {
   void deleteTodo(String id) {
     _todos.removeWhere((t) => t.id == id);
   }
+
+  @override
+  void setRepeat(String id, RepeatInterval repeat) {
+    final index = _todos.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      _todos[index] = _todos[index].copyWith(repeat: repeat);
+    }
+  }
 }
