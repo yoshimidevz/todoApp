@@ -44,6 +44,7 @@ class _TodoFormViewState extends State<_TodoFormView> {
 
   void _add() {
     if (!_formKey.currentState!.validate()) return;
+    if (_selectedCategory == null) return;
     context.read<TodoCubit>().add(
       _controller.text.trim(),
       _dateController.text.trim(),
@@ -123,7 +124,7 @@ class _TodoFormViewState extends State<_TodoFormView> {
                   children: [
                     Expanded(
                       child: DropdownButtonFormField<String>(
-                        initialValue: _selectedCategory,
+                        value: _selectedCategory,
                         decoration: const InputDecoration(labelText: 'Categoria'),
                         items: categoryState.categories
                             .map((c) => DropdownMenuItem(value: c, child: Text(c)))
