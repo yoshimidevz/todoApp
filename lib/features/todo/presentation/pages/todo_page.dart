@@ -33,7 +33,7 @@ class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixi
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -64,6 +64,7 @@ class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixi
           controller: _tabController,
           tabs: const [
             Tab(text: 'Todas'),
+            Tab(text: 'Importantes'),
             Tab(text: 'Para hoje'),
           ],
         ),
@@ -78,8 +79,9 @@ class _TodoViewState extends State<_TodoView> with SingleTickerProviderStateMixi
               child: TabBarView(
                 controller: _tabController,
                 children: const [
-                  TodoList(filterToday: false),
-                  TodoList(filterToday: true),
+                  TodoList(filterToday: false, filterImportant: false),
+                  TodoList(filterToday: false, filterImportant: true),
+                  TodoList(filterToday: true, filterImportant: false),
                 ],
               ),
             ),

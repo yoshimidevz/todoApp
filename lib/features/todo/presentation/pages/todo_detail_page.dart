@@ -77,7 +77,7 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
             ),
             _DetailRow(
               icon: Icons.star_border,
-              label: 'Favorita',
+              label: 'Importante',
               value: widget.todo.isFavorite ? 'Sim' : 'Não',
               valueColor: widget.todo.isFavorite ? AppColors.star : AppColors.textSecondary,
             ),
