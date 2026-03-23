@@ -12,15 +12,25 @@ import '../cubit/todo_state.dart';
 
 class TodoList extends StatelessWidget {
   final bool filterToday;
-  const TodoList({super.key, required this.filterToday});
+  final bool filterImportant;
+
+  const TodoList({
+    super.key, 
+    required this.filterToday, 
+    required this.filterImportant,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodoCubit, TodoState>(
       builder: (context, state) {
-        final todos = filterToday
+        var todos = filterToday
             ? state.filteredTodos.where((t) => t.isToday).toList()
             : state.filteredTodos;
+
+        if (filterImportant) {
+          todos = todos.where((t) => t.isFavorite).toList();
+        }
 
         final pending   = todos.where((t) => !t.isDone).toList();
         final completed = todos.where((t) => t.isDone).toList();
