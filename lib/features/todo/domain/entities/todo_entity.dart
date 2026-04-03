@@ -1,3 +1,4 @@
+import 'note_entity.dart';
 enum RepeatInterval { none, daily, weekly, monthly }
 
 class TodoEntity {
@@ -9,6 +10,7 @@ class TodoEntity {
   final String category;
   final bool isToday;
   final RepeatInterval repeat;
+  final List<NoteEntity> notes;
 
   const TodoEntity({
     required this.id,
@@ -19,9 +21,10 @@ class TodoEntity {
     this.category = 'Pessoal',
     this.isToday = false,
     this.repeat = RepeatInterval.none,
+    this.notes = const [],
   });
 
-  TodoEntity copyWith({bool? isDone, bool? isFavorite, String? dueDate, String? category, bool? isToday, RepeatInterval? repeat}) => TodoEntity(
+  TodoEntity copyWith({bool? isDone, bool? isFavorite, String? dueDate, String? category, bool? isToday, RepeatInterval? repeat, List<NoteEntity>? notes}) => TodoEntity(
     id: id,
     title: title,
     isDone: isDone ?? this.isDone,
@@ -30,5 +33,6 @@ class TodoEntity {
     category: category ?? this.category,
     isToday: isToday ?? this.isToday,
     repeat: repeat ?? this.repeat,
+    notes: notes ?? this.notes,
   );
 }
