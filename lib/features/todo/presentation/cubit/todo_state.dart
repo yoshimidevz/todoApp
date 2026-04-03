@@ -2,11 +2,11 @@ import '../../domain/entities/todo_entity.dart';
 
 class TodoState {
   final List<TodoEntity> todos;
-  final String filter;  // ← novo
+  final String filter; 
 
   const TodoState({
     this.todos = const [],
-    this.filter = '',   // ← padrão vazio
+    this.filter = '',  
   });
 
   TodoState copyWith({List<TodoEntity>? todos, String? filter}) => TodoState(
@@ -14,7 +14,6 @@ class TodoState {
     filter: filter ?? this.filter,
   );
 
-  // lista filtrada — calculada na hora
   List<TodoEntity> get filteredTodos {
     if (filter.isEmpty) return todos;
     return todos.where((t) =>

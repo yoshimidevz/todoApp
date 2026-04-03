@@ -1,5 +1,6 @@
 import '../../domain/entities/todo_entity.dart';
 import '../../domain/repositories/todo_repository.dart';
+import '../../domain/entities/note_entity.dart';
 
 class TodoRepositoryImpl implements TodoRepository {
   final List<TodoEntity> _todos = [];
@@ -36,6 +37,37 @@ class TodoRepositoryImpl implements TodoRepository {
     final index = _todos.indexWhere((t) => t.id == id);
     if (index != -1) {
       _todos[index] = _todos[index].copyWith(repeat: repeat);
+    }
+  }
+
+  @override
+  void addNote(String todoId, NoteEntity note) {
+    final index = _todos.indexWhere((t) => t.id == todoId);
+    if (index != -1) {
+      final updated = List<NoteEntity>.from(_todos[index].notes)..add(note);
+      _todos[index] = _todos[index].copyWith(notes: updated);
+    }
+  }
+
+  @override
+  void updateNote(String todoId, NoteEntity note) {
+    final index = _todos.indexWhere((t) => t.id == todoId);
+    if (index != -1) {
+      final updated = _todos[index].notes
+          .map((n) => n.id == note.id ? note : n)
+          .toList();
+      _todos[index] = _todos[index].copyWith(notes: updated);
+    }
+  }
+
+  @override
+  void deleteNote(String todoId, String noteId) {
+    final index = _todos.indexWhere((t) => t.id == todoId);
+    if (index != -1) {
+      final updated = _todos[index].notes
+          .where((n) => n.id != noteId)
+          .toList();
+      _todos[index] = _todos[index].copyWith(notes: updated);
     }
   }
 }

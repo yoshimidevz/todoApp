@@ -8,6 +8,8 @@ import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/messages/app_messages.dart';
 import '../../domain/entities/todo_entity.dart';
 import '../cubit/todo_cubit.dart';
+import '../cubit/todo_state.dart';
+import '../widgets/todo_notes.dart';
 
 class TodoDetailPage extends StatefulWidget {
   final TodoEntity todo;
@@ -40,140 +42,147 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Detalhes da tarefa'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go(AppRoutes.todo),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.todo.title,
-              style: AppTextStyles.heading.copyWith(
-                decoration: widget.todo.isDone ? TextDecoration.lineThrough : null,
-                color: widget.todo.isDone ? AppColors.textDisabled : AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            AppCategoryChip(label: widget.todo.category),
-            const SizedBox(height: 24),
-            _DetailRow(
-              icon: Icons.calendar_today,
-              label: 'Vencimento',
-              value: widget.todo.dueDate ?? 'Sem data',
-            ),
-            _DetailRow(
-              icon: Icons.check_circle_outline,
-              label: 'Status',
-              value: widget.todo.isDone ? 'Concluída' : 'Pendente',
-              valueColor: widget.todo.isDone ? AppColors.success : AppColors.textSecondary,
-            ),
-            _DetailRow(
-              icon: Icons.star_border,
-              label: 'Importante',
-              value: widget.todo.isFavorite ? 'Sim' : 'Não',
-              valueColor: widget.todo.isFavorite ? AppColors.star : AppColors.textSecondary,
-            ),
-            _DetailRow(
-              icon: Icons.repeat,
-              label: 'Repetição',
-              value: _repeatLabel(_repeat),
-            ),
-            const Divider(height: 40),
+    return BlocBuilder<TodoCubit, TodoState>(
+      builder: (context, state) {
+        final todo = state.todos.firstWhere(
+          (t) => t.id == widget.todo.id,
+          orElse: () => widget.todo,
+        );
 
-            // Para fazer hoje
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.wb_sunny_outlined, color: AppColors.primary),
-                    const SizedBox(width: 12),
-                    Text('Para fazer hoje', style: AppTextStyles.body),
-                  ],
-                ),
-                Switch(
-                  value: _isToday,
-                  activeThumbColor: AppColors.primary,
-                  onChanged: (value) {
-                    setState(() => _isToday = value);
-                    context.read<TodoCubit>().toggleToday(widget.todo.id);
-                  },
-                ),
-              ],
+        return Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+            title: const Text('Detalhes da tarefa'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.go(AppRoutes.todo),
             ),
-            const Divider(height: 40),
-
-            // Repetir
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.repeat, color: AppColors.primary),
-                    const SizedBox(width: 12),
-                    Text('Repetir', style: AppTextStyles.body),
-                  ],
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: DropdownButton<RepeatInterval>(
-                      value: _repeat,
-                      underline: const SizedBox(),
-                      isExpanded: false,
-                      style: AppTextStyles.body.copyWith(color: AppColors.primary),
-                      borderRadius: BorderRadius.circular(8),
-                      items: [
-                        DropdownMenuItem(
-                          value: RepeatInterval.none,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text(AppMessages.repeatNone),
-                          ),
-                        ),
-                        DropdownMenuItem(
-                          value: RepeatInterval.daily,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text(AppMessages.repeatDaily),
-                          ),
-                        ),
-                        DropdownMenuItem(
-                          value: RepeatInterval.weekly,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text(AppMessages.repeatWeekly),
-                          ),
-                        ),
-                        DropdownMenuItem(
-                          value: RepeatInterval.monthly,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text(AppMessages.repeatMonthly),
-                          ),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        if (value == null) return;
-                        setState(() => _repeat = value);
-                        context.read<TodoCubit>().setRepeat(widget.todo.id, value);
-                      },
-                    ),
+                Text(
+                  todo.title,
+                  style: AppTextStyles.heading.copyWith(
+                    decoration: todo.isDone ? TextDecoration.lineThrough : null,
+                    color: todo.isDone ? AppColors.textDisabled : AppColors.textPrimary,
                   ),
                 ),
+                const SizedBox(height: 16),
+                AppCategoryChip(label: todo.category),
+                const SizedBox(height: 24),
+                _DetailRow(
+                  icon: Icons.calendar_today,
+                  label: 'Vencimento',
+                  value: todo.dueDate ?? 'Sem data',
+                ),
+                _DetailRow(
+                  icon: Icons.check_circle_outline,
+                  label: 'Status',
+                  value: todo.isDone ? 'Concluída' : 'Pendente',
+                  valueColor: todo.isDone ? AppColors.success : AppColors.textSecondary,
+                ),
+                _DetailRow(
+                  icon: Icons.star_border,
+                  label: 'Favorita',
+                  value: todo.isFavorite ? 'Sim' : 'Não',
+                  valueColor: todo.isFavorite ? AppColors.star : AppColors.textSecondary,
+                ),
+                _DetailRow(
+                  icon: Icons.repeat,
+                  label: 'Repetição',
+                  value: _repeatLabel(_repeat),
+                ),
+                const Divider(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.wb_sunny_outlined, color: AppColors.primary),
+                        const SizedBox(width: 12),
+                        Text('Para fazer hoje', style: AppTextStyles.body),
+                      ],
+                    ),
+                    Switch(
+                      value: _isToday,
+                      activeThumbColor: AppColors.primary,
+                      onChanged: (value) {
+                        setState(() => _isToday = value);
+                        context.read<TodoCubit>().toggleToday(todo.id);
+                      },
+                    ),
+                  ],
+                ),
+                const Divider(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.repeat, color: AppColors.primary),
+                        const SizedBox(width: 12),
+                        Text('Repetir', style: AppTextStyles.body),
+                      ],
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: DropdownButton<RepeatInterval>(
+                          value: _repeat,
+                          underline: const SizedBox(),
+                          isExpanded: false,
+                          style: AppTextStyles.body.copyWith(color: AppColors.primary),
+                          borderRadius: BorderRadius.circular(8),
+                          items: [
+                            DropdownMenuItem(
+                              value: RepeatInterval.none,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Text(AppMessages.repeatNone),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: RepeatInterval.daily,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Text(AppMessages.repeatDaily),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: RepeatInterval.weekly,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Text(AppMessages.repeatWeekly),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: RepeatInterval.monthly,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                child: Text(AppMessages.repeatMonthly),
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            if (value == null) return;
+                            setState(() => _repeat = value);
+                            context.read<TodoCubit>().setRepeat(todo.id, value);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(height: 40),
+                TodoNotes(todoId: todo.id),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

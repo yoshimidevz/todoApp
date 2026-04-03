@@ -2,6 +2,7 @@ import 'package:flutter_application_2/features/todo/domain/repositories/todo_rep
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/todo_entity.dart';
 import 'todo_state.dart';
+import '../../domain/entities/note_entity.dart';
 
 class TodoCubit extends Cubit<TodoState> {
   final TodoRepository _repository;
@@ -45,6 +46,24 @@ class TodoCubit extends Cubit<TodoState> {
   }
   void setRepeat(String id, RepeatInterval repeat) {
     _repository.setRepeat(id, repeat);
+    _load();
+  }
+  void addNote(String todoId, String title, String content) {
+    final note = NoteEntity(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title,
+      content: content,
+      createdAt: DateTime.now(),
+    );
+    _repository.addNote(todoId, note);
+    _load();
+  }
+  void updateNote(String todoId, NoteEntity note) {
+    _repository.updateNote(todoId, note);
+    _load();
+  }
+  void deleteNote(String todoId, String noteId) {
+    _repository.deleteNote(todoId, noteId);
     _load();
   }
 }

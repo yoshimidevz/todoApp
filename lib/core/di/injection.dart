@@ -10,7 +10,7 @@ final getIt = GetIt.instance;
 
 void setupDependencies() {
   getIt.registerLazySingleton<TodoRepository>(() => TodoRepositoryImpl());
-  getIt.registerFactory(() => TodoCubit(getIt<TodoRepository>()));
+  getIt.registerLazySingleton(() => TodoCubit(getIt<TodoRepository>()));
   getIt.registerLazySingleton<CategoryRepository>(() => CategoryRepositoryImpl());
-  getIt.registerFactory(() => CategoryCubit(getIt()));
+  getIt.registerLazySingleton(() => CategoryCubit(getIt()));
 }
