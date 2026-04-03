@@ -1,7 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/todo/domain/entities/todo_entity.dart';
-import '../../features/todo/presentation/cubit/todo_cubit.dart';
 import '../../features/todo/presentation/pages/todo_detail_page.dart';
 import '../../features/todo/presentation/pages/todo_page.dart';
 abstract class AppRoutes {
