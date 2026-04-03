@@ -115,7 +115,7 @@ class _TodoListViewState extends State<_TodoListView> {
             context.read<TodoCubit>().toggleFavorite(todo.id),
         onTap: () => context.go(
           AppRoutes.todoDetail,
-          extra: {'todo': todo, 'cubit': context.read<TodoCubit>()},
+          extra: {'todo': todo,},
         ),
       ),
     );
