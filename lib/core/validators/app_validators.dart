@@ -1,15 +1,12 @@
-
 class AppValidators {
   static String? todoTitle(String? value) {
     if (value == null || value.trim().isEmpty) return 'Campo obrigatório';
     if (value.trim().length < 3) return 'Mínimo 3 caracteres';
-    
     return null;
   }
 
   static String? dueDate(String? value) {
     if (value == null || value.trim().isEmpty) return null;
-
     if (value.length < 10) return 'Data incompleta, formato DD/MM/AAAA';
 
     final parts = value.split('/');
@@ -19,10 +16,15 @@ class AppValidators {
 
     if (day == null || month == null || year == null) return 'Data inválida';
 
-    final date = DateTime.tryParse('$year-$month-$day');
+    final dayStr   = day.toString().padLeft(2, '0');
+    final monthStr = month.toString().padLeft(2, '0');
+
+    final date = DateTime.tryParse('$year-$monthStr-$dayStr');
     if (date == null) return 'Data inválida';
 
-    if (date.isBefore(DateTime.now())) return 'Data inválida';
+    final today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    if (date.isBefore(today)) return 'Data no passado';
+
     return null;
   }
 
