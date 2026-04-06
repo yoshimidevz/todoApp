@@ -10,6 +10,7 @@ import '../../domain/entities/todo_entity.dart';
 import '../cubit/todo_cubit.dart';
 import '../cubit/todo_state.dart';
 import '../widgets/todo_notes.dart';
+import '../widgets/todo_attachments.dart';
 
 class TodoDetailPage extends StatefulWidget {
   final TodoEntity todo;
@@ -245,6 +246,8 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
                     ),
                   ],
                 ),
+                const Divider(height: 40),
+                TodoAttachments(todoId: todo.id),
                 const Divider(height: 40),
                 TodoNotes(todoId: todo.id),
               ],
