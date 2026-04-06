@@ -11,4 +11,5 @@ abstract class TodoRepository {
   void addNote(String todoId, NoteEntity note);
   void updateNote(String todoId, NoteEntity note);
   void deleteNote(String todoId, String noteId);
+  void setReminder(String id, DateTime? reminderAt);
 }

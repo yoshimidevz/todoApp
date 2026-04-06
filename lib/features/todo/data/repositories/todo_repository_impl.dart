@@ -70,4 +70,11 @@ class TodoRepositoryImpl implements TodoRepository {
       _todos[index] = _todos[index].copyWith(notes: updated);
     }
   }
+  @override
+  void setReminder(String id, DateTime? reminderAt) {
+    final index = _todos.indexWhere((t) => t.id == id);
+    if (index != -1) {
+      _todos[index] = _todos[index].copyWith(reminderAt: reminderAt);
+    }
+  }
 }
