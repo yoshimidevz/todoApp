@@ -1,6 +1,7 @@
 import '../../domain/entities/todo_entity.dart';
 import '../../domain/repositories/todo_repository.dart';
 import '../../domain/entities/note_entity.dart';
+import '../../domain/entities/attachment_entity.dart';
 
 class TodoRepositoryImpl implements TodoRepository {
   final List<TodoEntity> _todos = [];
@@ -75,6 +76,26 @@ class TodoRepositoryImpl implements TodoRepository {
     final index = _todos.indexWhere((t) => t.id == id);
     if (index != -1) {
       _todos[index] = _todos[index].copyWith(reminderAt: reminderAt);
+    }
+  }
+  @override
+  void addAttachment(String todoId, AttachmentEntity attachment) {
+    final index = _todos.indexWhere((t) => t.id == todoId);
+    if (index != -1) {
+      final updated = List<AttachmentEntity>.from(_todos[index].attachments)
+        ..add(attachment);
+      _todos[index] = _todos[index].copyWith(attachments: updated);
+    }
+  }
+
+  @override
+  void deleteAttachment(String todoId, String attachmentPath) {
+    final index = _todos.indexWhere((t) => t.id == todoId);
+    if (index != -1) {
+      final updated = _todos[index].attachments
+          .where((a) => a.path != attachmentPath)
+          .toList();
+      _todos[index] = _todos[index].copyWith(attachments: updated);
     }
   }
 }

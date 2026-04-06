@@ -1,5 +1,6 @@
 import '../entities/todo_entity.dart';
 import '../entities/note_entity.dart';
+import '../entities/attachment_entity.dart';
 
 abstract class TodoRepository {
   List<TodoEntity> getTodos();
@@ -12,4 +13,6 @@ abstract class TodoRepository {
   void updateNote(String todoId, NoteEntity note);
   void deleteNote(String todoId, String noteId);
   void setReminder(String id, DateTime? reminderAt);
+  void addAttachment(String todoId, AttachmentEntity attachment);
+  void deleteAttachment(String todoId, String attachmentPath);
 }
