@@ -40,10 +40,56 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
     }
   }
 
+  Future<void> _pickReminder(BuildContext ctx, TodoEntity todo) async {
+    final now = DateTime.now();
+    final date = await showDatePicker(
+      context: ctx,
+      initialDate: todo.reminderAt ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (date == null || !mounted) return;
+
+    final time = await showTimePicker(
+      context: ctx,
+      initialTime: TimeOfDay.fromDateTime(todo.reminderAt ?? now),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: AppColors.primary,
+              onPrimary: Colors.white,
+              surface: AppColors.surface,
+              onSurface: AppColors.textPrimary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (time == null || !mounted) return;
+
+    final reminderAt = DateTime(
+      date.year, date.month, date.day,
+      time.hour, time.minute,
+    );
+
+    if (reminderAt.isBefore(now)) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Escolha um horário que ainda não passou')),
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    context.read<TodoCubit>().setReminder(todo.id, reminderAt);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TodoCubit, TodoState>(
-      builder: (context, state) {
+      builder: (ctx, state) {
         final todo = state.todos.firstWhere(
           (t) => t.id == widget.todo.id,
           orElse: () => widget.todo,
@@ -96,6 +142,7 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
                   value: _repeatLabel(_repeat),
                 ),
                 const Divider(height: 40),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -172,6 +219,28 @@ class _TodoDetailPageState extends State<TodoDetailPage> {
                             context.read<TodoCubit>().setRepeat(todo.id, value);
                           },
                         ),
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.notifications_outlined, color: AppColors.primary),
+                        const SizedBox(width: 12),
+                        Text('Lembrete', style: AppTextStyles.body),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: () => _pickReminder(ctx, todo),
+                      child: Text(
+                        todo.reminderAt != null
+                            ? '${todo.reminderAt!.day.toString().padLeft(2, '0')}/${todo.reminderAt!.month.toString().padLeft(2, '0')} ${todo.reminderAt!.hour.toString().padLeft(2, '0')}:${todo.reminderAt!.minute.toString().padLeft(2, '0')}'
+                            : 'Definir',
+                        style: AppTextStyles.body.copyWith(color: AppColors.primary),
                       ),
                     ),
                   ],
