@@ -11,6 +11,7 @@ class TodoEntity {
   final bool isToday;
   final RepeatInterval repeat;
   final List<NoteEntity> notes;
+  final DateTime? reminderAt;
 
   const TodoEntity({
     required this.id,
@@ -22,9 +23,10 @@ class TodoEntity {
     this.isToday = false,
     this.repeat = RepeatInterval.none,
     this.notes = const [],
+    this.reminderAt,
   });
 
-  TodoEntity copyWith({bool? isDone, bool? isFavorite, String? dueDate, String? category, bool? isToday, RepeatInterval? repeat, List<NoteEntity>? notes}) => TodoEntity(
+  TodoEntity copyWith({bool? isDone, bool? isFavorite, String? dueDate, String? category, bool? isToday, RepeatInterval? repeat, List<NoteEntity>? notes, DateTime? reminderAt}) => TodoEntity(
     id: id,
     title: title,
     isDone: isDone ?? this.isDone,
@@ -34,5 +36,6 @@ class TodoEntity {
     isToday: isToday ?? this.isToday,
     repeat: repeat ?? this.repeat,
     notes: notes ?? this.notes,
+    reminderAt: reminderAt ?? this.reminderAt,
   );
 }
