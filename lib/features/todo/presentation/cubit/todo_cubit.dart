@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/todo_entity.dart';
 import 'todo_state.dart';
 import '../../domain/entities/note_entity.dart';
+import '../../../../core/services/notification_service.dart';
 
 class TodoCubit extends Cubit<TodoState> {
   final TodoRepository _repository;
@@ -64,6 +65,19 @@ class TodoCubit extends Cubit<TodoState> {
   }
   void deleteNote(String todoId, String noteId) {
     _repository.deleteNote(todoId, noteId);
+    _load();
+  }
+  void setReminder(String id, DateTime? reminderAt) {
+    _repository.setReminder(id, reminderAt);
+    if (reminderAt != null) {
+      NotificationService.schedule(
+        id: id.hashCode,
+        title: state.todos.firstWhere((t) => t.id == id).title,
+        scheduledAt: reminderAt,
+      );
+    } else {
+      NotificationService.cancel(id.hashCode);
+    }
     _load();
   }
 }
