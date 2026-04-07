@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/todo_entity.dart';
 import 'todo_state.dart';
 import '../../domain/entities/note_entity.dart';
+import '../../domain/entities/attachment_entity.dart';
 import '../../../../core/services/notification_service.dart';
 
 class TodoCubit extends Cubit<TodoState> {
@@ -78,6 +79,15 @@ class TodoCubit extends Cubit<TodoState> {
     } else {
       NotificationService.cancel(id.hashCode);
     }
+    _load();
+  }
+  void addAttachment(String todoId, AttachmentEntity attachment) {
+    _repository.addAttachment(todoId, attachment);
+    _load();
+  }
+
+  void deleteAttachment(String todoId, String attachmentPath) {
+    _repository.deleteAttachment(todoId, attachmentPath);
     _load();
   }
 }
